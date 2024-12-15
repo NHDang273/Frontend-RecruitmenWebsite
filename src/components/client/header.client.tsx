@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { callLogout } from '@/config/api';
+import { FaRobot } from 'react-icons/fa';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import ManageAccount from './modal/manage.account';
 
@@ -44,6 +45,11 @@ const Header = (props: any) => {
             label: <Link to={'/company'}>Top Công ty IT</Link>,
             key: '/company',
             icon: <RiseOutlined />,
+        },
+        {
+            label: <Link to={'/chatbot'}>Chatbot</Link>,
+            key: '/chatbot',
+            icon: <FaRobot />, 
         }
     ];
 
