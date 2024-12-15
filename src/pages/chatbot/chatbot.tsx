@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaReact, FaTrash, FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // Nhập biểu tượng mũi tên trái và phải
+import { FaReact, FaTrash, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
-  const [isHistoryVisible, setIsHistoryVisible] = useState(true); // Thêm state để quản lý việc thu gọn lịch sử
+  const [isHistoryVisible, setIsHistoryVisible] = useState(true);
+  const [ws, setWs] = useState<WebSocket | null>(null); // Quản lý WebSocket
   const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -21,14 +22,39 @@ const ChatbotPage: React.FC = () => {
     }
   }, [messages]);
 
+  // Kết nối WebSocket khi component được mount
+  useEffect(() => {
+    const websocket = new WebSocket("ws://localhost:8000/api/chat/ws");
+    setWs(websocket);
+
+    websocket.onopen = () => {
+      console.log("WebSocket connection established.");
+    };
+
+    websocket.onmessage = (event) => {
+      const data = event.data;
+      setMessages((prev) => [...prev, `Bot: ${data}`]);
+    };
+
+    websocket.onerror = (error) => {
+      console.error("WebSocket error:", error);
+    };
+
+    websocket.onclose = () => {
+      console.log("WebSocket connection closed.");
+    };
+
+    return () => {
+      websocket.close();
+    };
+  }, []);
+
   const handleSendMessage = () => {
-    if (message.trim() !== "") {
+    if (message.trim() !== "" && ws && ws.readyState === WebSocket.OPEN) {
       setMessages([...messages, `You: ${message}`]);
       setHistory([...history, message]);
+      ws.send(message); // Gửi tin nhắn qua WebSocket
       setMessage("");
-      setTimeout(() => {
-        setMessages(prev => [...prev, "Bot: Đây là phản hồi mẫu!"]);
-      }, 500);
     }
   };
 
@@ -38,7 +64,7 @@ const ChatbotPage: React.FC = () => {
   };
 
   const handleClearHistory = () => {
-    setHistory([]); // Xoá tất cả lịch sử tìm kiếm
+    setHistory([]);
   };
 
   const toggleHistoryVisibility = () => {
@@ -49,7 +75,7 @@ const ChatbotPage: React.FC = () => {
     <div style={{ display: 'flex', height: '100vh', backgroundColor: '#1e1e2f', color: '#fff', fontFamily: 'Arial, sans-serif' }}>
       {/* Thanh lịch sử tìm kiếm bên trái */}
       <div style={{
-        width: isHistoryVisible ? '15%' : '1%', // Thay đổi chiều rộng khi ẩn
+        width: isHistoryVisible ? '15%' : '1%',
         backgroundColor: '#292b3a',
         padding: '10px',
         borderRadius: '10px',
