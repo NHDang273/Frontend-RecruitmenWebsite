@@ -134,14 +134,14 @@ const ChatbotPage: React.FC = () => {
       {/* Chat content */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <div style={{
-          flex: 1,
-          overflowY: 'auto',
-          padding: '20px',
-          margin: '2% 22% 3%',
-          borderRadius: '10px',
-          backgroundColor: '#292b3a',
-          display: 'flex',
-          flexDirection: 'column',
+           flex: 1,
+           overflowY: 'auto',
+           padding: 'clamp(10px, 2%, 40px)',
+           margin: 'clamp(10px, 5%, 40px) clamp(10px, 10%, 150px) 60px',
+           borderRadius: 'clamp(5px, 1%, 15px)',
+           backgroundColor: '#292b3a',
+           display: 'flex',
+           flexDirection: 'column',
         }} ref={chatRef}>
           {messages.map((msg, index) => (
             <div key={index} style={{
