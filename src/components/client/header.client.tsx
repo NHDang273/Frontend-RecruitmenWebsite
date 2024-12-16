@@ -12,6 +12,8 @@ import { callLogout } from '@/config/api';
 import { FaRobot } from 'react-icons/fa';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import ManageAccount from './modal/manage.account';
+import Logo from '@/assets/logo.svg';
+
 
 const Header = (props: any) => {
     const navigate = useNavigate();
@@ -103,7 +105,12 @@ const Header = (props: any) => {
                     {!isMobile ?
                         <div style={{ display: "flex", gap: 30 }}>
                             <div className={styles['brand']} >
-                                <FaReact onClick={() => navigate('/')} title='DangUIT' />
+                                <img
+                                    src={Logo}
+                                    alt="logo"
+                                    style={{ width: 24
+                                    , height: 24 }}
+                                />
                             </div>
                             <div className={styles['top-menu']}>
                                 <ConfigProvider
