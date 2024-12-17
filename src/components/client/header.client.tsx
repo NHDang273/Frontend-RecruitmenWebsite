@@ -108,8 +108,8 @@ const Header = (props: any) => {
                                 <img
                                     src={Logo}
                                     alt="logo"
-                                    style={{ width: 24
-                                    , height: 24 }}
+                                    style={{ width: 24, height: 24 }}
+                                    onClick={() => navigate('/')} title="Trang chủ"
                                 />
                             </div>
                             <div className={styles['top-menu']}>

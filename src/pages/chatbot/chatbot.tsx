@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaReact, FaTrash, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import Logo from '@/assets/logo.svg';
+import Full_logo from '@/assets/lego_nen.png';
 
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
   const [isHistoryVisible, setIsHistoryVisible] = useState(true);
+  const [isElementVisible, setIsElementVisible] = useState(true);
   const [ws, setWs] = useState<WebSocket | null>(null); // Quản lý WebSocket
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -52,6 +55,7 @@ const ChatbotPage: React.FC = () => {
   const handleSendMessage = () => {
     if (message.trim() !== "" && ws && ws.readyState === WebSocket.OPEN) {
       setMessages([...messages, `You: ${message}`]);
+      setIsElementVisible(false);
       setHistory([...history, message]);
       ws.send(message); // Gửi tin nhắn qua WebSocket
       setMessage("");
@@ -72,14 +76,14 @@ const ChatbotPage: React.FC = () => {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#1e1e2f', color: '#fff', fontFamily: 'Arial, sans-serif' }}>
+    <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff', color: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}>
       {/* Thanh lịch sử tìm kiếm bên trái */}
       <div style={{
         width: isHistoryVisible ? '15%' : '1%',
-        backgroundColor: '#292b3a',
+        backgroundColor: '#e3e3e3',
         padding: '10px',
-        borderRadius: '10px',
-        marginRight: '10px',
+        // borderRadius: '10px',
+        // margin: '10px',
         display: 'flex',
         flexDirection: 'column',
         overflowY: 'auto',
@@ -88,22 +92,24 @@ const ChatbotPage: React.FC = () => {
         <button
           onClick={toggleHistoryVisibility}
           style={{
-            backgroundColor: '#292b3a',
+            backgroundColor: '#222831',
             border: 'none',
-            color: '#fff',
+            borderRadius: '5px',
+            color: '#a7a7a7',
             cursor: 'pointer',
             marginBottom: '10px',
+            padding: '10px'
           }}
         >
           {isHistoryVisible ? <FaArrowLeft /> : <FaArrowRight />}
         </button>
         {isHistoryVisible && (
           <>
-            <h3 style={{ color: '#fff' }}>Search History</h3>
+            <h3 style={{ color: '#222831', alignSelf: 'center' }}>Search History</h3>
             {history.map((item, index) => (
               <div key={index} style={{
-                backgroundColor: '#444',
-                color: '#ddd',
+                backgroundColor: '#e3e3e3',
+                color: '#222831',
                 margin: '5px 0',
                 padding: '5px 10px',
                 borderRadius: '10px',
@@ -115,13 +121,17 @@ const ChatbotPage: React.FC = () => {
             <button
               onClick={handleClearHistory}
               style={{
+                width: '10%',
                 marginTop: '10px',
-                padding: '5px 10px',
+                padding: '10px',
                 backgroundColor: '#ff4d4d',
                 color: '#fff',
                 border: 'none',
                 borderRadius: '5px',
                 cursor: 'pointer',
+                position: 'absolute',
+                bottom: 10,
+                fontFamily: 'inherit',
                 fontWeight: 'bold',
               }}
             >
@@ -139,17 +149,43 @@ const ChatbotPage: React.FC = () => {
            padding: 'clamp(10px, 2%, 40px)',
            margin: 'clamp(10px, 5%, 40px) clamp(10px, 10%, 150px) 60px',
            borderRadius: 'clamp(5px, 1%, 15px)',
-           backgroundColor: '#292b3a',
+           backgroundColor: '#fff',
            display: 'flex',
            flexDirection: 'column',
         }} ref={chatRef}>
+
+          {isElementVisible && (
+            <>
+              <img
+                src={Full_logo}
+                alt="logo"
+                style={{ 
+                  width: '200px', 
+                  height: '200px',
+                  margin: '150px auto 0',
+                }}
+              />
+
+              <div style={{
+                margin: '40px auto 0',
+                padding: '10px 15px',
+                color: '#222831',
+                textAlign: 'center',
+                fontFamily: 'inherit',
+                fontSize: '30px',
+              }}>
+                Hello, how can I help you?
+              </div>
+            </>
+          )}
+
           {messages.map((msg, index) => (
             <div key={index} style={{
               margin: '10px 0',
               padding: '10px 15px',
               borderRadius: '10px',
-              backgroundColor: msg.startsWith("You:") ? '#0078ff' : '#444',
-              color: msg.startsWith("You:") ? '#fff' : '#ddd',
+              backgroundColor: msg.startsWith("You:") ? '#e3e3e3' : '#fff',
+              color: msg.startsWith("You:") ? '#222831' : '#222831',
               maxWidth: '70%',
               alignSelf: msg.startsWith("You:") ? 'flex-end' : 'flex-start',
               textAlign: 'left',
@@ -170,11 +206,24 @@ const ChatbotPage: React.FC = () => {
           position: 'sticky',
           bottom: 0,
         }}>
-          <FaReact style={{
+          {/* <FaReact style={{
             fontSize: '30px',
             marginRight: '10px',
             animation: 'spin 5s infinite linear',
-          }} />
+          }} /> */}
+          <img
+            src={Logo}
+            alt="logo"
+            style={{ 
+              width: '20px', 
+              height: '20px', 
+              marginRight: '20px',
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '50%',
+              animation: 'spin 5s infinite linear', 
+            }}
+          />
           <input
             type="text"
             value={message}
@@ -184,21 +233,20 @@ const ChatbotPage: React.FC = () => {
               flex: 1,
               maxWidth: '50%',
               padding: '10px 15px',
-              borderRadius: '20px',
+              borderRadius: '10px',
               border: 'none',
               outline: 'none',
-              backgroundColor: '#292b3a',
-              color: '#fff',
+              backgroundColor: '#e3e3e3',
+              color: '#222831',
               fontSize: '16px',
-              boxShadow: '0 -2px 5px rgba(0,0,0,0.3)',
             }}
             onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
           />
           <FaTrash
             onClick={handleClearChat}
             style={{
-              fontSize: '25px',
-              marginLeft: '10px',
+              fontSize: '20px',
+              marginLeft: '20px',
               color: '#ff4d4d',
               cursor: 'pointer',
               transition: 'color 0.3s',
@@ -209,12 +257,12 @@ const ChatbotPage: React.FC = () => {
           <button
             onClick={handleSendMessage}
             style={{
-              marginLeft: '10px',
+              marginLeft: '20px',
               padding: '10px 20px',
-              backgroundColor: '#0078ff',
+              backgroundColor: '#04BFC6',
               color: '#fff',
               border: 'none',
-              borderRadius: '20px',
+              borderRadius: '10px',
               cursor: 'pointer',
               fontWeight: 'bold',
               fontSize: '16px',
