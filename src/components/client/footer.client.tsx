@@ -6,11 +6,11 @@ const Footer: React.FC = () => {
             <div style={footerContentStyle}>
                 {/* Các số ID được hiển thị bên trái */}
                 <div style={idContainerStyle}>
-                    <p>21521815 - Trần Quốc An</p>
-                    <p>21521388 - Võ Thái Sơn</p>
-                    <p>21521920 - Nguyễn Hải Đăng</p>
-                    <p>21521873 - Đinh Hoàng Tâm Bình</p>
-                </div>
+    <p style={idTextStyle}>21521815 - Trần Quốc An</p>
+    <p style={idTextStyle}>21521388 - Võ Thái Sơn</p>
+    <p style={idTextStyle}>21521920 - Nguyễn Hải Đăng</p>
+    <p style={idTextStyle}>21521873 - Đinh Hoàng Tâm Bình</p>
+</div>
 
                 {/* Logo và các liên kết */}
                 <div style={mainSectionStyle}>
@@ -74,7 +74,13 @@ const idContainerStyle: React.CSSProperties = {
     padding: "0",
 };
 
-
+const idTextStyle: React.CSSProperties = {
+    color: "#aaa", // Màu chữ
+    fontFamily: "'Arial', sans-serif", // Font chữ
+    fontSize: "12px", // Kích thước chữ
+    margin: "0", // Xóa khoảng cách mặc định
+    lineHeight: "1.5", // Khoảng cách giữa các dòng
+};
 
 const mainSectionStyle: React.CSSProperties = {
     flex: 1,
