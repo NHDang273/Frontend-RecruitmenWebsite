@@ -15,7 +15,7 @@ import ProtectedRoute from 'components/share/protected-route.ts';
 import Header from 'components/client/header.client';
 import Footer from 'components/client/footer.client';
 import HomePage from 'pages/home';
-import styles from 'styles/app.module.scss';
+import styles from 'styles/app.module.scss';  
 import DashboardPage from './pages/admin/dashboard';
 import CompanyPage from './pages/admin/company';
 import PermissionPage from './pages/admin/permission';

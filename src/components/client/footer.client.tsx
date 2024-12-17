@@ -31,7 +31,8 @@ const Footer: React.FC = () => {
 const footerStyle: React.CSSProperties = {
     backgroundColor: "#222",
     color: "#fff",
-    padding: "20px 0",
+    padding: "20px 10px",
+    marginTop: "40px",
     textAlign: "center",
     fontSize: "14px",
     fontFamily: "'Arial', sans-serif",
@@ -50,7 +51,7 @@ const linkContainerStyle: React.CSSProperties = {
 const linkStyle: React.CSSProperties = {
     color: "#4CAF50",
     textDecoration: "none",
-    margin: "0 10px",
+    margin: "0px 10px",
     transition: "color 0.3s",
 };
 

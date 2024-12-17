@@ -79,7 +79,7 @@ const ChatbotPage: React.FC = () => {
     <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff', color: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}>
       {/* Thanh lịch sử tìm kiếm bên trái */}
       <div style={{
-        width: isHistoryVisible ? '15%' : '1%',
+        width: isHistoryVisible ? '15%' : '2%',
         backgroundColor: '#e3e3e3',
         padding: '10px',
         // borderRadius: '10px',
@@ -121,7 +121,7 @@ const ChatbotPage: React.FC = () => {
             <button
               onClick={handleClearHistory}
               style={{
-                width: '10%',
+                width: '15%',
                 marginTop: '10px',
                 padding: '10px',
                 backgroundColor: '#ff4d4d',
@@ -134,6 +134,7 @@ const ChatbotPage: React.FC = () => {
                 fontFamily: 'inherit',
                 fontWeight: 'bold',
               }}
+              
             >
               Clear All History
             </button>
