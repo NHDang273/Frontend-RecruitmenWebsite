@@ -3,14 +3,21 @@ import { FaReact, FaTrash, FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import Logo from '@/assets/logo.svg';
 import Full_logo from '@/assets/lego_nen.png';
 
+interface PdfFile {
+  url: string;
+  name: string;
+}
+
 const ChatbotPage: React.FC = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
   const [history, setHistory] = useState<string[]>([]);
   const [isHistoryVisible, setIsHistoryVisible] = useState(true);
   const [isElementVisible, setIsElementVisible] = useState(true);
-  const [ws, setWs] = useState<WebSocket | null>(null); // Quản lý WebSocket
+  const [ws, setWs] = useState<WebSocket | null>(null);
   const chatRef = useRef<HTMLDivElement>(null);
+  const [pdfFiles, setPdfFiles] = useState<PdfFile[]>([]);
+  const pdfFilesRef = useRef<PdfFile[]>([]);
 
   useEffect(() => {
     document.body.style.overflow = 'hidden';
@@ -34,9 +41,33 @@ const ChatbotPage: React.FC = () => {
       console.log("WebSocket connection established.");
     };
 
+    // Định dạng dữ liệu binary
+    websocket.binaryType = 'arraybuffer';
+
     websocket.onmessage = (event) => {
       const data = event.data;
-      setMessages((prev) => [...prev, `Bot: ${data}`]);
+      console.log("WebSocket message received:", data);
+
+      if (typeof data === 'string') {
+        setMessages((prev) => [...prev, `Bot: ${data}`]);
+      } else if (data instanceof ArrayBuffer) {
+        const blob = new Blob([data], { type: 'application/pdf' });
+        const pdfUrl = URL.createObjectURL(blob);
+        console.log("PDF URL:", pdfUrl);
+        console.log(blob);
+
+        const newPdfFile = {
+          url: pdfUrl,
+          name: `file-${pdfFilesRef.current.length + 1}.pdf`,
+        };
+
+        // cập nhật state và ref
+        setPdfFiles((prevFiles) => {
+          const updatedFiles = [...prevFiles, newPdfFile];
+          pdfFilesRef.current = updatedFiles;
+          return updatedFiles;
+        });
+      }
     };
 
     websocket.onerror = (error) => {
@@ -49,6 +80,7 @@ const ChatbotPage: React.FC = () => {
 
     return () => {
       websocket.close();
+      pdfFilesRef.current.forEach((file) => URL.revokeObjectURL(file.url));
     };
   }, []);
 
@@ -57,7 +89,7 @@ const ChatbotPage: React.FC = () => {
       setMessages([...messages, `You: ${message}`]);
       setIsElementVisible(false);
       setHistory([...history, message]);
-      ws.send(message); // Gửi tin nhắn qua WebSocket
+      ws.send(message);
       setMessage("");
     }
   };
@@ -74,6 +106,7 @@ const ChatbotPage: React.FC = () => {
   const toggleHistoryVisibility = () => {
     setIsHistoryVisible(!isHistoryVisible);
   };
+
 
   return (
     <div style={{ display: 'flex', height: '100vh', backgroundColor: '#fff', color: '#fff', fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"' }}>
@@ -154,6 +187,7 @@ const ChatbotPage: React.FC = () => {
            display: 'flex',
            flexDirection: 'column',
         }} ref={chatRef}>
+            
 
           {isElementVisible && (
             <>
@@ -196,7 +230,39 @@ const ChatbotPage: React.FC = () => {
               {msg.replace("You:", "").replace("Bot:", "")}
             </div>
           ))}
+            {/* PDF files */}
+          <div>
+            <h1>PDF Viewer</h1>
+            {pdfFiles.map((file, index) => (
+              <div key={index} style={{ marginBottom: '20px' }}>
+                <iframe
+                  src={file.url}
+                  title={`PDF ${index + 1}`}
+                  width="100%"
+                  height="500px"
+                  style={{ marginBottom: '10px', border: '1px solid #ddd' }}
+                ></iframe>
+                <a
+                  href={file.url}
+                  download={file.name}
+                  style={{
+                    display: 'inline-block',
+                    padding: '10px 20px',
+                    backgroundColor: '#4CAF50',
+                    color: '#fff',
+                    textDecoration: 'none',
+                    borderRadius: '5px',
+                    fontSize: '16px',
+                  }}
+                >
+                  Tải xuống {file.name}
+                </a>
+              </div>
+            ))}
+          </div>
+
         </div>
+      
 
         {/* Input bar */}
         <div style={{
